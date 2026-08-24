@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import { ArrowLeft } from 'lucide-react';
+import { CommunityLogo } from '@/components/community-logo';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -9,28 +10,43 @@ export default function AuthSimpleLayout({
     description,
 }: AuthLayoutProps) {
     return (
-        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
-            <div className="w-full max-w-sm">
-                <div className="flex flex-col gap-8">
-                    <div className="flex flex-col items-center gap-4">
-                        <Link
-                            href={home()}
-                            className="flex flex-col items-center gap-2 font-medium"
-                        >
-                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
-                            </div>
-                            <span className="sr-only">{title}</span>
-                        </Link>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#D9DED8] p-4 font-sans text-gray-900 selection:bg-[#A9C6A0] selection:text-[#14532D] sm:p-6 lg:p-10">
+            <div className="w-full max-w-md">
+                {/* Back to Home Link */}
+                <div className="mb-4">
+                    <Link
+                        href={home()}
+                        className="group inline-flex items-center gap-2 text-sm font-bold text-[#14532D] transition-colors hover:text-black"
+                    >
+                        <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+                        <span>Kembali ke Beranda</span>
+                    </Link>
+                </div>
 
-                        <div className="space-y-2 text-center">
-                            <h1 className="text-xl font-medium">{title}</h1>
-                            <p className="text-center text-sm text-muted-foreground">
-                                {description}
-                            </p>
+                {/* Central Card */}
+                <div className="w-full overflow-hidden rounded-[28px] border border-[#D5DDD4] bg-white shadow-2xl shadow-emerald-950/15">
+                    {/* Header Banner */}
+                    <div className="relative overflow-hidden bg-[#14532D] p-7 text-white sm:p-8">
+                        {/* Background glow */}
+                        <div className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-emerald-600/20 blur-2xl" />
+
+                        <div className="relative z-10 space-y-3">
+                            <CommunityLogo variant="white" size="sm" />
+
+                            <h1 className="pt-1 text-2xl leading-tight font-extrabold tracking-tight text-white">
+                                {title}
+                            </h1>
+
+                            {description && (
+                                <p className="text-xs leading-relaxed font-normal text-emerald-100/90 sm:text-sm">
+                                    {description}
+                                </p>
+                            )}
                         </div>
                     </div>
-                    {children}
+
+                    {/* Form Content */}
+                    <div className="p-7 sm:p-8">{children}</div>
                 </div>
             </div>
         </div>
