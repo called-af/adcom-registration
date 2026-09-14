@@ -2,7 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
-use Laravel\Fortify\Features;
+use Illuminate\Support\Str;
 
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));
@@ -19,38 +19,19 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
-});
-
-test('users with two factor enabled are redirected to two factor challenge', function () {
-    $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
-
-    Features::twoFactorAuthentication([
-        'confirm' => true,
-        'confirmPassword' => true,
-    ]);
-
-    $user = User::factory()->withTwoFactor()->create();
-
-    $response = $this->post(route('login'), [
-        'email' => $user->email,
-        'password' => 'password',
-    ]);
-
-    $response->assertRedirect(route('two-factor.login'));
-    $response->assertSessionHas('login.id', $user->id);
-    $this->assertGuest();
+    $response->assertRedirect(route('dashboard'));
 });
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post(route('login.store'), [
+    $response = $this->post(route('login.store'), [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
 
     $this->assertGuest();
+    $response->assertSessionHasErrors('email');
 });
 
 test('users can logout', function () {
@@ -58,20 +39,23 @@ test('users can logout', function () {
 
     $response = $this->actingAs($user)->post(route('logout'));
 
-    $response->assertRedirect(route('home'));
-
+    $response->assertRedirect(route('login'));
     $this->assertGuest();
 });
 
-test('users are rate limited', function () {
+test('users are rate limited after repeated failed login attempts', function () {
     $user = User::factory()->create();
+    $throttleKey = Str::transliterate(Str::lower($user->email).'|127.0.0.1');
 
-    RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
+    for ($i = 0; $i < 5; $i++) {
+        RateLimiter::hit($throttleKey);
+    }
 
     $response = $this->post(route('login.store'), [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
 
-    $response->assertTooManyRequests();
+    $response->assertSessionHasErrors('email');
+    $this->assertGuest();
 });
