@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Registration extends Model
 {
@@ -14,7 +13,7 @@ class Registration extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'division_id',
+        'division',
         'name',
         'nim',
         'angkatan',
@@ -34,13 +33,5 @@ class Registration extends Model
         return [
             'agreed_to_rules' => 'boolean',
         ];
-    }
-
-    /**
-     * @return BelongsTo<Division, $this>
-     */
-    public function division(): BelongsTo
-    {
-        return $this->belongsTo(Division::class);
     }
 }
