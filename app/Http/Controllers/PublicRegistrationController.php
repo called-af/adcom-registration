@@ -67,6 +67,7 @@ class PublicRegistrationController extends Controller
                         'email' => $registration->email,
                         'whatsapp' => $registration->whatsapp,
                     ],
+                    'rejection_reason' => $registration->rejection_reason,
                     'message' => match ($registration->status) {
                         'lolos' => 'Selamat! Kamu dinyatakan LOLOS SELEKSI UKM Android Developer Community.',
                         'pending' => 'Pendaftaranmu sedang dalam tahap peninjauan oleh tim penyeleksi.',

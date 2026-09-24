@@ -11,11 +11,12 @@ import type {
 import { ThemedButton } from '@/components/themed-button';
 
 interface Props {
-    searchedNim?: string;
+    searchedNim?: string | null;
     result?: {
         status: RegistrationStatusType;
         data: RegistrationDetailData;
         message?: string;
+        rejection_reason?: string | null;
     } | null;
     notFound?: boolean;
     status?: string;
@@ -25,75 +26,21 @@ interface Props {
     };
 }
 
-const mockDatabase: Record<
-    string,
-    {
-        status: RegistrationStatusType;
-        data: RegistrationDetailData;
-        message?: string;
-    }
-> = {
-    '2024081001': {
-        status: 'lolos',
-        data: {
-            name: 'Muhammad Farhan',
-            nim: '2024081001',
-            division: 'Frontend Developer',
-            submittedAt: '20 Mei 2026',
-            studyProgram: 'Teknik Informatika',
-        },
-        message:
-            'Selamat! Kamu dinyatakan LOLOS SELEKSI UKM Android Developer Community, silakan menunggu informasi selanjutnya terkait jadwal wawancara melalui WhatsApp atau Email.',
-    },
-    '2024081002': {
-        status: 'pending',
-        data: {
-            name: 'Alya Putri Ramadhani',
-            nim: '2024081002',
-            division: 'UI/UX Designer',
-            submittedAt: '21 Mei 2026',
-            studyProgram: 'Sistem Informasi',
-        },
-        message:
-            'Pendaftaranmu sedang dalam proses review oleh tim penyeleksi UKM Android Developer Community. Mohon menunggu pengumuman resmi.',
-    },
-    '2024081003': {
-        status: 'ditolak',
-        data: {
-            name: 'Rian Syahputra',
-            nim: '2024081003',
-            division: 'Backend Developer',
-            submittedAt: '19 Mei 2026',
-            studyProgram: 'Teknik Informatika',
-        },
-        message:
-            'Mohon maaf, kamu belum lolos seleksi UKM Android Developer Community periode ini. Jangan berkecil hati dan tetap semangat berkarya!',
-    },
-};
-
 export default function PublicCheckStatus({
     result,
     searchedNim: propSearchedNim,
 }: Props) {
-    const initialNim = propSearchedNim || '2024081001';
+    const initialNim = propSearchedNim || '';
     const [nimInput, setNimInput] = useState(initialNim);
     const [currentSearchedNim, setCurrentSearchedNim] = useState(initialNim);
     const [isLoading, setIsLoading] = useState(false);
-    const [currentResult, setCurrentResult] = useState<{
-        status: RegistrationStatusType;
-        data: RegistrationDetailData;
-        message?: string;
-    } | null>(result !== undefined ? result : mockDatabase[initialNim] || null);
 
     useEffect(() => {
-        if (result !== undefined) {
-            setCurrentResult(result);
-        }
         if (propSearchedNim) {
             setCurrentSearchedNim(propSearchedNim);
             setNimInput(propSearchedNim);
         }
-    }, [result, propSearchedNim]);
+    }, [propSearchedNim]);
 
     const handleSearch = (e?: React.FormEvent) => {
         if (e) {
@@ -120,11 +67,6 @@ export default function PublicCheckStatus({
                 },
                 onError: () => {
                     setIsLoading(false);
-                    if (mockDatabase[trimmed]) {
-                        setCurrentResult(mockDatabase[trimmed]);
-                    } else {
-                        setCurrentResult(null);
-                    }
                 },
             },
         );
@@ -196,13 +138,14 @@ export default function PublicCheckStatus({
                                 </FormField>
                             </form>
 
-                            {currentResult ? (
+                            {result ? (
                                 <StatusResult
-                                    status={currentResult.status}
-                                    data={currentResult.data}
-                                    customMessage={currentResult.message}
+                                    status={result.status}
+                                    data={result.data}
+                                    customMessage={result.message}
+                                    rejectionReason={result.rejection_reason}
                                 />
-                            ) : (
+                            ) : currentSearchedNim ? (
                                 <div className="space-y-1.5 py-6 text-center text-gray-500">
                                     <p className="text-sm font-medium">
                                         Data dengan NIM{' '}
@@ -217,7 +160,7 @@ export default function PublicCheckStatus({
                                         pendaftaran.
                                     </p>
                                 </div>
-                            )}
+                            ) : null}
 
                             <div className="border-t border-gray-100 pt-1.5 text-center">
                                 <p className="text-xs text-gray-500">

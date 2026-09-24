@@ -35,6 +35,7 @@ class DashboardController extends Controller
                 },
                 'division_slug' => $registration->division,
                 'status' => $registration->status,
+                'rejection_reason' => $registration->rejection_reason,
                 'submitted_at' => $registration->created_at->translatedFormat('d F Y'),
             ]);
 
@@ -50,9 +51,13 @@ class DashboardController extends Controller
     {
         $validated = $request->validate([
             'status' => ['required', Rule::in(['pending', 'lolos', 'ditolak'])],
+            'rejection_reason' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $registration->update(['status' => $validated['status']]);
+        $registration->update([
+            'status' => $validated['status'],
+            'rejection_reason' => $validated['status'] === 'ditolak' ? ($validated['rejection_reason'] ?? null) : null,
+        ]);
 
         $message = match ($validated['status']) {
             'lolos' => "{$registration->name} berhasil DITERIMA (Lolos Seleksi)!",

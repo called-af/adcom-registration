@@ -24,6 +24,7 @@ class RegistrationResource extends JsonResource
             'whatsapp' => $this->whatsapp,
             'motivation' => $this->motivation,
             'status' => $this->status,
+            'rejectionReason' => $this->rejection_reason,
             'submittedAt' => $this->created_at->translatedFormat('d F Y'),
         ];
     }

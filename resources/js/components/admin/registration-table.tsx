@@ -20,7 +20,7 @@ interface RegistrationTableProps {
     onPageChange: (page: number) => void;
     onSelectRegistration: (reg: Registration) => void;
     onAccept: (id: number) => void;
-    onReject: (id: number) => void;
+    onRejectClick: (reg: Registration) => void;
 }
 
 export function RegistrationTable({
@@ -32,7 +32,7 @@ export function RegistrationTable({
     onPageChange,
     onSelectRegistration,
     onAccept,
-    onReject,
+    onRejectClick,
 }: RegistrationTableProps) {
     const fromIndex = (currentPage - 1) * perPage;
 
@@ -124,7 +124,7 @@ export function RegistrationTable({
 
                                         {reg.status !== 'ditolak' && (
                                             <button
-                                                onClick={() => onReject(reg.id)}
+                                                onClick={() => onRejectClick(reg)}
                                                 title="Tolak pendaftar ini"
                                                 className="inline-flex items-center rounded-lg border border-red-200 bg-red-50 p-1.5 text-xs font-bold text-red-600 transition-colors hover:bg-red-100 active:scale-95"
                                             >

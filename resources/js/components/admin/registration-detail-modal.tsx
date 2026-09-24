@@ -1,13 +1,16 @@
-import { Check, Clock, Mail, Phone, X } from 'lucide-react';
+import { Check, Clock, Mail, Phone, X, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { FormField, ThemedTextarea } from '@/components/form-field';
 import { cn } from '@/lib/utils';
 import type { Registration } from '@/types/registration';
 import { StatusBadge } from './status-badge';
 
 interface RegistrationDetailModalProps {
     registration: Registration;
+    initialRejectMode?: boolean;
     onClose: () => void;
     onAccept: (id: number) => void;
-    onReject: (id: number) => void;
+    onReject: (id: number, reason: string) => void;
     onPending: (id: number) => void;
 }
 
@@ -30,22 +33,31 @@ function DetailItem({
 
 export function RegistrationDetailModal({
     registration,
+    initialRejectMode = false,
     onClose,
     onAccept,
     onReject,
     onPending,
 }: RegistrationDetailModalProps) {
+    const [isRejecting, setIsRejecting] = useState(initialRejectMode);
+    const [rejectionReason, setRejectionReason] = useState(registration.rejection_reason || '');
+
+    const handleRejectSubmit = () => {
+        onReject(registration.id, rejectionReason);
+        setIsRejecting(false);
+    };
+
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={onClose}
         >
             <div
-                className="w-full max-w-xl overflow-hidden rounded-[26px] border border-[#D5DDD4] bg-white shadow-2xl shadow-emerald-950/25"
+                className="w-full max-w-xl overflow-hidden rounded-[26px] border border-[#D5DDD4] bg-white shadow-2xl shadow-emerald-950/25 max-h-[95vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="relative overflow-hidden bg-[#14532D] px-6 py-5 text-white">
+                <div className="relative overflow-hidden bg-[#14532D] px-6 py-5 text-white shrink-0">
                     <div className="pointer-events-none absolute -top-10 -right-10 size-40 rounded-full bg-emerald-500/20 blur-2xl" />
                     <div className="flex items-start justify-between">
                         <div className="relative z-10">
@@ -69,7 +81,7 @@ export function RegistrationDetailModal({
                 </div>
 
                 {/* Body */}
-                <div className="space-y-4 p-6">
+                <div className="space-y-4 p-6 overflow-y-auto">
                     <div className="grid grid-cols-2 gap-3.5">
                         <DetailItem label="Program Studi" value={registration.study_program} />
                         <DetailItem
@@ -122,56 +134,104 @@ export function RegistrationDetailModal({
                         </p>
                     </div>
 
+                    {registration.status === 'ditolak' && registration.rejection_reason && !isRejecting && (
+                        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+                            <p className="mb-1.5 flex items-center gap-1 text-[11px] font-bold tracking-wider text-red-800 uppercase">
+                                <AlertTriangle className="size-3.5" />
+                                Alasan Penolakan
+                            </p>
+                            <p className="text-sm leading-relaxed text-red-900">
+                                {registration.rejection_reason}
+                            </p>
+                        </div>
+                    )}
+
                     {/* Penerimaan / Status actions */}
                     <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-4">
                         <p className="mb-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">
                             Keputusan Penerimaan
                         </p>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <button
-                                disabled={registration.status === 'lolos'}
-                                onClick={() => onAccept(registration.id)}
-                                className={cn(
-                                    'inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition-all shadow-xs',
-                                    registration.status === 'lolos'
-                                        ? 'cursor-not-allowed bg-emerald-100 text-emerald-400'
-                                        : 'bg-[#14532D] text-white hover:bg-[#0E3D20] active:scale-[0.98]',
-                                )}
-                            >
-                                <Check className="size-4" />
-                                {registration.status === 'lolos'
-                                    ? 'Sudah Diterima'
-                                    : 'Terima Pendaftar (Loloskan)'}
-                            </button>
-
-                            <button
-                                disabled={registration.status === 'pending'}
-                                onClick={() => onPending(registration.id)}
-                                className={cn(
-                                    'inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-xs font-bold transition-all',
-                                    registration.status === 'pending'
-                                        ? 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-300'
-                                        : 'border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 active:scale-[0.98]',
-                                )}
-                            >
-                                <Clock className="size-3.5" />
-                                Set Pending
-                            </button>
-
-                            <button
-                                disabled={registration.status === 'ditolak'}
-                                onClick={() => onReject(registration.id)}
-                                className={cn(
-                                    'inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-xs font-bold transition-all',
-                                    registration.status === 'ditolak'
-                                        ? 'cursor-not-allowed border-red-200 bg-red-50 text-red-300'
-                                        : 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 active:scale-[0.98]',
-                                )}
-                            >
-                                <X className="size-3.5" />
-                                Tolak
-                            </button>
-                        </div>
+                        
+                        {isRejecting ? (
+                            <div className="space-y-4 animate-in fade-in zoom-in-95">
+                                <FormField
+                                    label="Alasan Penolakan"
+                                    htmlFor="rejectionReason"
+                                    hint="(Opsional)"
+                                >
+                                    <ThemedTextarea
+                                        id="rejectionReason"
+                                        rows={3}
+                                        value={rejectionReason}
+                                        onChange={(e) => setRejectionReason(e.target.value)}
+                                        placeholder="Berikan alasan mengapa pendaftar ditolak..."
+                                    />
+                                </FormField>
+                                <div className="flex gap-2 pt-1">
+                                    <button
+                                        onClick={handleRejectSubmit}
+                                        className="inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold bg-red-600 text-white hover:bg-red-700 active:scale-[0.98] transition-all flex-1 shadow-xs"
+                                    >
+                                        Konfirmasi Tolak
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsRejecting(false);
+                                            setRejectionReason(registration.rejection_reason || '');
+                                        }}
+                                        className="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-xs"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    disabled={registration.status === 'lolos'}
+                                    onClick={() => onAccept(registration.id)}
+                                    className={cn(
+                                        'inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition-all shadow-xs',
+                                        registration.status === 'lolos'
+                                            ? 'cursor-not-allowed bg-emerald-100 text-emerald-400'
+                                            : 'bg-[#14532D] text-white hover:bg-[#0E3D20] active:scale-[0.98]',
+                                    )}
+                                >
+                                    <Check className="size-4" />
+                                    {registration.status === 'lolos'
+                                        ? 'Sudah Diterima'
+                                        : 'Terima Pendaftar (Loloskan)'}
+                                </button>
+    
+                                <button
+                                    disabled={registration.status === 'pending'}
+                                    onClick={() => onPending(registration.id)}
+                                    className={cn(
+                                        'inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-xs font-bold transition-all',
+                                        registration.status === 'pending'
+                                            ? 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-300'
+                                            : 'border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 active:scale-[0.98]',
+                                    )}
+                                >
+                                    <Clock className="size-3.5" />
+                                    Set Pending
+                                </button>
+    
+                                <button
+                                    disabled={registration.status === 'ditolak'}
+                                    onClick={() => setIsRejecting(true)}
+                                    className={cn(
+                                        'inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-xs font-bold transition-all',
+                                        registration.status === 'ditolak'
+                                            ? 'cursor-not-allowed border-red-200 bg-red-50 text-red-300'
+                                            : 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 active:scale-[0.98]',
+                                    )}
+                                >
+                                    <X className="size-3.5" />
+                                    Tolak
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

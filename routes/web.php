@@ -5,7 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicRegistrationController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'public/register')->name('home');
+Route::redirect('/', '/daftar')->name('home');
 
 Route::get('/daftar', [PublicRegistrationController::class, 'create'])->name('register.form');
 Route::post('/daftar', [PublicRegistrationController::class, 'store'])->name('register.store');
