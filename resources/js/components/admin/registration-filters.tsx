@@ -37,7 +37,6 @@ export function RegistrationFilters({
                     className="h-10 rounded-xl border border-[#D5DDD4] bg-white px-3 text-xs font-semibold text-gray-700 shadow-xs focus:border-[#14532D] focus:ring-2 focus:ring-[#14532D]/20 focus:outline-none"
                 >
                     <option value="">Semua Divisi</option>
-                    <option value="android">Android Developer</option>
                     <option value="uiux">UI/UX Designer</option>
                     <option value="frontend">Frontend Developer</option>
                     <option value="backend">Backend Developer</option>

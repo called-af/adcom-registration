@@ -12,6 +12,7 @@ export interface Registration {
     division: string;
     division_slug: string;
     status: RegistrationStatus;
+    rejection_reason?: string | null;
     submitted_at: string;
 }
 

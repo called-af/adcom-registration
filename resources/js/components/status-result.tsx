@@ -18,6 +18,7 @@ interface StatusResultProps {
     status: RegistrationStatusType;
     data: RegistrationDetailData;
     customMessage?: string;
+    rejectionReason?: string | null;
     className?: string;
 }
 
@@ -25,6 +26,7 @@ export function StatusResult({
     status,
     data,
     customMessage,
+    rejectionReason,
     className,
 }: StatusResultProps) {
     const config = {
@@ -98,6 +100,12 @@ export function StatusResult({
                         <p className="text-xs leading-relaxed font-medium sm:text-[13px]">
                             {customMessage || config.defaultMessage}
                         </p>
+                        {status === 'ditolak' && rejectionReason && (
+                            <div className="mt-2 rounded-lg bg-red-100/50 border border-red-200 p-2.5">
+                                <p className="text-[10px] font-bold tracking-wider text-red-800 uppercase mb-0.5">Catatan Penolakan</p>
+                                <p className="text-xs font-medium text-red-900">{rejectionReason}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

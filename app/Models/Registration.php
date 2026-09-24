@@ -23,6 +23,7 @@ class Registration extends Model
         'motivation',
         'agreed_to_rules',
         'status',
+        'rejection_reason',
     ];
 
     /**
