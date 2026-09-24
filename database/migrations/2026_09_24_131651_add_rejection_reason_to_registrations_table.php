@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('divisions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('icon')->nullable();
-            $table->timestamps();
+        Schema::table('registrations', function (Blueprint $table) {
+            $table->text('rejection_reason')->nullable()->after('status');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('divisions');
+        Schema::table('registrations', function (Blueprint $table) {
+            $table->dropColumn('rejection_reason');
+        });
     }
 };

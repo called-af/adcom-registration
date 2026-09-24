@@ -1,25 +1,27 @@
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { RegistrationDetailModal } from '@/components/admin/registration-detail-modal';
 import { RegistrationFilters } from '@/components/admin/registration-filters';
 import { RegistrationStats } from '@/components/admin/registration-stats';
 import { RegistrationTable } from '@/components/admin/registration-table';
-import { INITIAL_REGISTRATIONS } from '@/data/mock-registrations';
 import type { Registration, RegistrationStats as StatsType } from '@/types/registration';
 
-export default function Dashboard() {
-    const [registrationList, setRegistrationList] = useState<Registration[]>(INITIAL_REGISTRATIONS);
+interface Props {
+    registrations: Registration[];
+}
+
+export default function Dashboard({ registrations }: Props) {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [divisionFilter, setDivisionFilter] = useState('');
     const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+    const [openInRejectMode, setOpenInRejectMode] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 6;
 
     // Filter registrations
     const filteredRegistrations = useMemo(() => {
-        return registrationList.filter((reg) => {
+        return registrations.filter((reg) => {
             const matchesSearch =
                 !search ||
                 reg.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -33,17 +35,17 @@ export default function Dashboard() {
 
             return matchesSearch && matchesStatus && matchesDivision;
         });
-    }, [registrationList, search, statusFilter, divisionFilter]);
+    }, [registrations, search, statusFilter, divisionFilter]);
 
     // Calculate dynamic stats
     const stats: StatsType = useMemo(
         () => ({
-            total: registrationList.length,
-            pending: registrationList.filter((r) => r.status === 'pending').length,
-            lolos: registrationList.filter((r) => r.status === 'lolos').length,
-            ditolak: registrationList.filter((r) => r.status === 'ditolak').length,
+            total: registrations.length,
+            pending: registrations.filter((r) => r.status === 'pending').length,
+            lolos: registrations.filter((r) => r.status === 'lolos').length,
+            ditolak: registrations.filter((r) => r.status === 'ditolak').length,
         }),
-        [registrationList],
+        [registrations],
     );
 
     // Pagination
@@ -54,38 +56,48 @@ export default function Dashboard() {
 
     // Accept registration (Loloskan)
     const handleAccept = (id: number) => {
-        const target = registrationList.find((r) => r.id === id);
-        setRegistrationList((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, status: 'lolos' } : item)),
-        );
-        if (selectedRegistration?.id === id) {
-            setSelectedRegistration((prev) => (prev ? { ...prev, status: 'lolos' } : null));
-        }
-        toast.success(`${target?.name || 'Pendaftar'} berhasil DITERIMA (Lolos Seleksi)!`);
+        router.patch(`/dashboard/registrations/${id}/status`, { status: 'lolos' }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                if (selectedRegistration?.id === id) {
+                    setSelectedRegistration((prev) => (prev ? { ...prev, status: 'lolos' } : null));
+                }
+            }
+        });
     };
 
     // Reject registration
-    const handleReject = (id: number) => {
-        const target = registrationList.find((r) => r.id === id);
-        setRegistrationList((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, status: 'ditolak' } : item)),
-        );
-        if (selectedRegistration?.id === id) {
-            setSelectedRegistration((prev) => (prev ? { ...prev, status: 'ditolak' } : null));
-        }
-        toast.error(`${target?.name || 'Pendaftar'} telah ditolak.`);
+    const handleReject = (id: number, reason: string = '') => {
+        router.patch(`/dashboard/registrations/${id}/status`, { status: 'ditolak', rejection_reason: reason }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                if (selectedRegistration?.id === id) {
+                    setSelectedRegistration((prev) => (prev ? { ...prev, status: 'ditolak', rejection_reason: reason } : null));
+                }
+            }
+        });
+    };
+
+    const handleRejectClick = (reg: Registration) => {
+        setSelectedRegistration(reg);
+        setOpenInRejectMode(true);
+    };
+
+    const handleModalClose = () => {
+        setSelectedRegistration(null);
+        setOpenInRejectMode(false);
     };
 
     // Set pending
     const handlePending = (id: number) => {
-        const target = registrationList.find((r) => r.id === id);
-        setRegistrationList((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, status: 'pending' } : item)),
-        );
-        if (selectedRegistration?.id === id) {
-            setSelectedRegistration((prev) => (prev ? { ...prev, status: 'pending' } : null));
-        }
-        toast.info(`Status ${target?.name || 'pendaftar'} dikembalikan ke Pending.`);
+        router.patch(`/dashboard/registrations/${id}/status`, { status: 'pending' }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                if (selectedRegistration?.id === id) {
+                    setSelectedRegistration((prev) => (prev ? { ...prev, status: 'pending' } : null));
+                }
+            }
+        });
     };
 
     return (
@@ -140,9 +152,12 @@ export default function Dashboard() {
                     totalPages={totalPages}
                     perPage={perPage}
                     onPageChange={setCurrentPage}
-                    onSelectRegistration={setSelectedRegistration}
+                    onSelectRegistration={(reg) => {
+                        setSelectedRegistration(reg);
+                        setOpenInRejectMode(false);
+                    }}
                     onAccept={handleAccept}
-                    onReject={handleReject}
+                    onRejectClick={handleRejectClick}
                 />
             </div>
 
@@ -150,7 +165,8 @@ export default function Dashboard() {
             {selectedRegistration && (
                 <RegistrationDetailModal
                     registration={selectedRegistration}
-                    onClose={() => setSelectedRegistration(null)}
+                    initialRejectMode={openInRejectMode}
+                    onClose={handleModalClose}
                     onAccept={handleAccept}
                     onReject={handleReject}
                     onPending={handlePending}

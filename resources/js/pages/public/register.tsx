@@ -24,11 +24,11 @@ export default function PublicRegister({ divisions, status, success }: Props) {
         useForm({
             name: '',
             nim: '',
-            angkatan: '2024',
+            angkatan: '',
             study_program: '',
             email: '',
             whatsapp: '',
-            division_id: 'frontend',
+            division_id: '',
             motivation: '',
             agreed_to_rules: false,
         });
@@ -201,7 +201,7 @@ export default function PublicRegister({ divisions, status, success }: Props) {
                                                         e.target.value,
                                                     )
                                                 }
-                                                placeholder="2024"
+                                                placeholder="2025"
                                                 className="font-mono"
                                                 isError={!!errors.angkatan}
                                             />
@@ -333,6 +333,11 @@ export default function PublicRegister({ divisions, status, success }: Props) {
                                                 </span>
                                             }
                                         />
+                                        {errors.agreed_to_rules && (
+                                            <p className="mt-1 text-xs font-medium text-red-600">
+                                                {errors.agreed_to_rules}
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="pt-0.5">
