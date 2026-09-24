@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('division_id')->constrained()->cascadeOnDelete();
+            $table->string('division');
             $table->string('name');
             $table->string('nim')->unique();
             $table->string('angkatan', 4);
