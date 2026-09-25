@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
-import { CommunityLogo } from '@/components/community-logo';
+import { Logo } from '@/components/logo';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -31,7 +31,7 @@ export default function AuthSimpleLayout({
                         <div className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-emerald-600/20 blur-2xl" />
 
                         <div className="relative z-10 space-y-3">
-                            <CommunityLogo variant="white" size="sm" />
+                            <Logo size="md" className="shadow-md" />
 
                             <h1 className="pt-1 text-2xl leading-tight font-extrabold tracking-tight text-white">
                                 {title}

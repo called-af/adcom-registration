@@ -1,8 +1,8 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { CommunityLogo } from '@/components/community-logo';
 import { FormField, ThemedInput } from '@/components/form-field';
+import { Logo } from '@/components/logo';
 import { StatusResult } from '@/components/status-result';
 import type {
     RegistrationDetailData,
@@ -93,7 +93,7 @@ export default function PublicCheckStatus({
                             <div className="pointer-events-none absolute -top-20 -right-20 size-72 rounded-full bg-emerald-600/20 blur-2xl" />
 
                             <div className="relative z-10 space-y-2">
-                                <CommunityLogo variant="white" size="sm" />
+                                <Logo size="sm" className="shadow-md" />
 
                                 <h1 className="text-xl leading-tight font-extrabold tracking-tight text-white sm:text-2xl">
                                     Cek Status Pendaftaran
@@ -101,7 +101,7 @@ export default function PublicCheckStatus({
 
                                 <p className="text-xs leading-relaxed font-normal text-emerald-100/90">
                                     Pantau status pendaftaranmu dengan
-                                    memasukkan NIM atau email kampus.
+                                    memasukkan NIM.
                                 </p>
                             </div>
                         </div>
