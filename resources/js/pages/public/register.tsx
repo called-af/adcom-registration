@@ -1,7 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Code2, Instagram, Rocket, Users } from 'lucide-react';
 import { useState } from 'react';
-import { CommunityLogo } from '@/components/community-logo';
 import { DivisionSelect } from '@/components/division-select';
 import type { DivisionOption } from '@/components/division-select';
 import {
@@ -10,7 +9,7 @@ import {
     ThemedInput,
     ThemedTextarea,
 } from '@/components/form-field';
-import { IllustrationBox } from '@/components/illustration-box';
+import { Logo } from '@/components/logo';
 import { ThemedButton } from '@/components/themed-button';
 
 interface Props {
@@ -19,7 +18,7 @@ interface Props {
     success?: boolean;
 }
 
-export default function PublicRegister({ divisions, status, success }: Props) {
+export default function PublicRegister({ divisions, success }: Props) {
     const { data, setData, post, processing, errors, wasSuccessful, reset } =
         useForm({
             name: '',
@@ -50,31 +49,128 @@ export default function PublicRegister({ divisions, status, success }: Props) {
         <>
             <Head title="Pendaftaran Anggota - UKM Android Developer Community" />
 
-            <div className="flex min-h-screen items-center justify-center bg-[#D9DED8] p-3 font-sans text-gray-900 selection:bg-[#A9C6A0] selection:text-[#14532D] sm:p-6 lg:h-screen lg:max-h-screen lg:overflow-hidden lg:p-6 xl:p-8">
-                <main className="grid w-full max-w-[1140px] grid-cols-1 overflow-hidden rounded-[28px] border border-[#D5DDD4] bg-white shadow-2xl shadow-emerald-950/15 lg:h-full lg:max-h-[min(94vh,850px)] lg:grid-cols-12">
-                    <div className="relative flex flex-col justify-between overflow-hidden bg-[#14532D] p-6 text-white sm:p-8 lg:col-span-5 lg:h-full lg:overflow-hidden lg:p-7 xl:p-8">
-                        <div className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-emerald-700/20 blur-3xl" />
-                        <div className="pointer-events-none absolute -right-24 -bottom-24 size-96 rounded-full bg-emerald-500/10 blur-3xl" />
+            <div className="flex min-h-screen w-full flex-col bg-white font-sans text-gray-900 selection:bg-[#A9C6A0] selection:text-[#14532D] lg:flex-row">
+                {/* Decorative Panel — footer on mobile, left side on desktop */}
+                <div className="relative flex min-h-[280px] w-full flex-col justify-between overflow-hidden bg-green-800 p-6 order-last sm:p-10 lg:sticky lg:top-0 lg:order-first lg:h-screen lg:min-h-[380px] lg:w-1/2 lg:p-12 xl:p-16">
+                    {/* Multi-layer gradient */}
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(5,46,22,1)_0%,_rgba(22,101,52,1)_50%,_rgba(6,78,59,1)_100%)]" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
 
-                        <div className="relative z-10 space-y-3">
-                            <CommunityLogo variant="white" size="md" />
+                    {/* Grid pattern */}
+                    <div
+                        className="absolute inset-0 opacity-[0.04]"
+                        style={{
+                            backgroundImage:
+                                'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+                            backgroundSize: '48px 48px',
+                        }}
+                    />
 
-                            <h1 className="pt-1 text-xl leading-[1.2] font-extrabold tracking-tight text-white sm:text-2xl lg:text-[26px] xl:text-[28px]">
-                                Bergabung Bersama UKM Android Developer
+                    {/* Decorative rings */}
+                    <div className="pointer-events-none absolute -top-32 -right-32 size-[500px] rounded-full border border-white/[0.04]" />
+                    <div className="pointer-events-none absolute -top-16 -right-16 size-[380px] rounded-full border border-dashed border-white/[0.06]" />
+                    <div className="pointer-events-none absolute -bottom-40 -left-40 size-[450px] rounded-full border border-white/[0.03]" />
+
+                    {/* Glow effects */}
+                    <div className="pointer-events-none absolute top-0 left-1/2 size-96 -translate-x-1/2 rounded-full bg-emerald-400/8 blur-[100px]" />
+                    <div className="pointer-events-none absolute bottom-0 right-0 size-72 rounded-full bg-teal-500/10 blur-[80px]" />
+
+                    {/* Right edge accent */}
+                    <div className="pointer-events-none absolute top-0 right-0 h-full w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent" />
+
+                    {/* === Content === */}
+
+                    {/* Top: Branding */}
+                    <div className="relative z-10 space-y-4">
+                        <Logo size="lg" className="shadow-md" />
+
+                        <div className="max-w-sm space-y-2">
+                            <h1 className="text-xl leading-[1.15] font-extrabold tracking-tight text-white sm:text-2xl lg:text-[27px] xl:text-3xl">
+                                Bergabung Bersama{' '}
+                                <span className="text-green-600">
+                                    Android Developer
+                                </span>{' '}
                                 Community
                             </h1>
 
-                            <p className="text-xs leading-relaxed font-normal text-emerald-100/90 sm:text-sm">
+                            <p className="text-sm leading-relaxed font-normal text-white/70">
                                 Kembangkan skill, bangun relasi, dan ciptakan
                                 inovasi teknologi bersama komunitas developer
                                 kampus.
                             </p>
                         </div>
-
-                        <IllustrationBox className="relative z-10 mt-4 lg:mt-6" />
                     </div>
 
-                    <div className="flex flex-col justify-between bg-white p-6 sm:p-8 lg:col-span-7 lg:h-full lg:overflow-y-auto lg:p-7 xl:p-8">
+                    {/* Bottom: Quote + Features + Footer */}
+                    <div className="relative z-10 mt-8 flex flex-col space-y-8 lg:mt-0">
+                        {/* Quote */}
+                        <blockquote className="border-l-2 border-emerald-400/40 pl-4">
+                            <p className="text-[15px] leading-relaxed font-medium italic text-white/80">
+                                "Teknologi terbaik lahir dari kolaborasi,
+                                bukan kompetisi."
+                            </p>
+                        </blockquote>
+
+                        {/* Feature list */}
+                        <div className="space-y-4">
+                            {[
+                                {
+                                    icon: Users,
+                                    title: 'Komunitas Solid',
+                                    desc: 'Jaringan developer kampus yang saling mendukung dan bertumbuh bersama.',
+                                },
+                                {
+                                    icon: Code2,
+                                    title: 'Skill Development',
+                                    desc: 'Workshop, mentoring, dan tech talk rutin dari praktisi industri.',
+                                },
+                                {
+                                    icon: Rocket,
+                                    title: 'Real Projects',
+                                    desc: 'Kerjakan project nyata yang bisa langsung masuk portofolio karirmu.',
+                                },
+                            ].map((item) => (
+                                <div
+                                    key={item.title}
+                                    className="flex items-start gap-3.5"
+                                >
+                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.07]">
+                                        <item.icon className="size-[18px] text-emerald-400" />
+                                    </div>
+                                    <div className="space-y-0.5">
+                                        <p className="text-[13px] font-semibold leading-tight text-white">
+                                            {item.title}
+                                        </p>
+                                        <p className="text-xs leading-relaxed text-white/50">
+                                            {item.desc}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="space-y-3 border-t border-white/[0.06] pt-4">
+                            <a
+                                href="https://instagram.com/adcom_official"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 text-xs font-medium text-white/50 transition-colors hover:text-white"
+                            >
+                                <Instagram className="size-4" />
+                                @adcom_official
+                            </a>
+                            <p className="text-[11px] font-medium tracking-wide text-white/30">
+                                &copy; {new Date().getFullYear()} UKM Android
+                                Developer Community
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Half: Form (Full Screen Layout, No Card / Container Box) */}
+                <div className="flex w-full flex-col justify-center bg-white px-5 py-9 sm:px-9 lg:min-h-screen lg:w-1/2 lg:overflow-y-auto lg:px-11 xl:px-15">
+                    <div className="mx-auto w-full max-w-xl">
                         {isSubmitted ? (
                             <div className="my-auto animate-in space-y-6 py-12 text-center duration-300 fade-in-50">
                                 <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-[#D6E6D3] text-[#14532D] shadow-sm">
@@ -119,11 +215,8 @@ export default function PublicRegister({ divisions, status, success }: Props) {
                                 </div>
                             </div>
                         ) : (
-                            <form
-                                onSubmit={handleSubmit}
-                                className="space-y-3.5 sm:space-y-4"
-                            >
-                                <div className="space-y-0.5 pb-0.5">
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-1 pb-1">
                                     <div className="flex items-center justify-between">
                                         <h2 className="text-xl font-extrabold tracking-tight text-gray-950 sm:text-2xl">
                                             Pendaftaran Anggota
@@ -136,13 +229,13 @@ export default function PublicRegister({ divisions, status, success }: Props) {
                                             <ArrowRight className="size-3" />
                                         </Link>
                                     </div>
-                                    <p className="text-xs font-normal text-gray-500">
+                                    <p className="text-xs font-normal text-gray-500 sm:text-sm">
                                         Lengkapi data dirimu untuk bergabung
                                         dengan komunitas kami.
                                     </p>
                                 </div>
 
-                                <div className="space-y-2.5 sm:space-y-3">
+                                <div className="space-y-3 sm:space-y-3.5">
                                     <FormField
                                         label="NAMA LENGKAP"
                                         htmlFor="name"
@@ -340,7 +433,7 @@ export default function PublicRegister({ divisions, status, success }: Props) {
                                         )}
                                     </div>
 
-                                    <div className="pt-0.5">
+                                    <div className="pt-1">
                                         <ThemedButton
                                             type="submit"
                                             loading={processing}
@@ -348,28 +441,16 @@ export default function PublicRegister({ divisions, status, success }: Props) {
                                             icon={
                                                 <ArrowRight className="size-4" />
                                             }
-                                            className="h-10.5 w-full text-sm font-bold"
+                                            className="h-11 w-full text-sm font-bold"
                                         >
                                             Daftar Menjadi Anggota
                                         </ThemedButton>
-                                    </div>
-
-                                    <div className="text-center">
-                                        <p className="text-[11px] text-gray-500 sm:text-xs">
-                                            Sudah mendaftar sebelumnya?{' '}
-                                            <Link
-                                                href="/cek-status"
-                                                className="font-bold text-[#14532D] underline-offset-4 hover:underline"
-                                            >
-                                                Cek Status Pendaftaran di sini
-                                            </Link>
-                                        </p>
                                     </div>
                                 </div>
                             </form>
                         )}
                     </div>
-                </main>
+                </div>
             </div>
         </>
     );

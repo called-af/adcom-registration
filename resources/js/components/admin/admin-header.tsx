@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { ExternalLink, LayoutDashboard, LogOut } from 'lucide-react';
-import { CommunityLogo } from '@/components/community-logo';
+import { Logo } from '@/components/logo';
 import { dashboard, home } from '@/routes';
 
 export function AdminHeader() {
@@ -17,7 +17,7 @@ export function AdminHeader() {
                 {/* Brand & Main Navigation */}
                 <div className="flex items-center gap-6">
                     <Link href={dashboard()} className="transition-opacity hover:opacity-95">
-                        <CommunityLogo variant="white" size="md" />
+                        <Logo size="sm" className="shadow-xs" />
                     </Link>
 
                     <div className="hidden h-6 w-px bg-emerald-700/80 md:block" />

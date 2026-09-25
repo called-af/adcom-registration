@@ -39,6 +39,7 @@ interface DivisionSelectProps {
     options?: DivisionOption[];
     error?: string;
     disabled?: boolean;
+    compact?: boolean;
 }
 
 export function DivisionSelect({
@@ -47,10 +48,12 @@ export function DivisionSelect({
     options = defaultDivisions,
     error,
     disabled = false,
+    compact = false,
 }: DivisionSelectProps) {
     const renderIcon = (type: DivisionOption['icon'], isSelected: boolean) => {
         const iconClasses = cn(
-            'size-5 transition-transform duration-200',
+            compact ? 'size-4' : 'size-5',
+            'transition-transform duration-200',
             isSelected
                 ? 'scale-110 text-[#14532D]'
                 : 'text-[#14532D]/75 group-hover:text-[#14532D]',
@@ -71,7 +74,7 @@ export function DivisionSelect({
     return (
         <div className="space-y-1">
             <div
-                className="flex flex-col gap-1.5"
+                className={cn('flex flex-col', compact ? 'gap-1.5' : 'gap-2')}
                 role="radiogroup"
                 aria-label="Pilihan Minat Divisi"
             >
@@ -87,8 +90,8 @@ export function DivisionSelect({
                             disabled={disabled}
                             onClick={() => onChange(option.id)}
                             className={cn(
-                                'group relative flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-1.5 text-left transition-all duration-200 outline-none select-none',
-                                'border',
+                                'group relative flex w-full cursor-pointer items-center justify-between rounded-xl border text-left transition-all duration-200 outline-none select-none',
+                                compact ? 'px-3 py-1.5' : 'px-3.5 py-2',
                                 isSelected
                                     ? 'border-[#14532D] bg-[#B7CDB0] text-gray-900 shadow-xs ring-1 ring-[#14532D]/30'
                                     : 'border-[#B7CDB0]/70 bg-[#E7EEE6] text-gray-800 hover:border-[#14532D]/40 hover:bg-[#DDE7DB]',
@@ -98,7 +101,8 @@ export function DivisionSelect({
                             <div className="flex items-center gap-2.5">
                                 <div
                                     className={cn(
-                                        'flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors duration-200',
+                                        'flex shrink-0 items-center justify-center rounded-lg transition-colors duration-200',
+                                        compact ? 'size-6.5' : 'size-7.5',
                                         isSelected
                                             ? 'bg-white/80 text-[#14532D] shadow-xs'
                                             : 'bg-white/60 text-[#14532D] group-hover:bg-white',
