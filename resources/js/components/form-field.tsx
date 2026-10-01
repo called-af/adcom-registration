@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import * as React from 'react';
 import { Input, type InputProps } from '@/components/ui/input';
 import { Textarea, type TextareaProps } from '@/components/ui/textarea';
@@ -65,6 +65,45 @@ export const ThemedInput = Input;
 
 export type ThemedTextareaProps = TextareaProps;
 export const ThemedTextarea = Textarea;
+
+export interface ThemedSelectProps
+    extends React.ComponentProps<'select'> {
+    isError?: boolean;
+    placeholder?: string;
+}
+
+export function ThemedSelect({
+    className,
+    isError,
+    placeholder,
+    children,
+    ...props
+}: ThemedSelectProps) {
+    return (
+        <div className="relative">
+            <select
+                className={cn(
+                    'flex h-9.5 w-full appearance-none rounded-xl bg-[#E7EEE6] px-3.5 py-1.5 pr-9 text-sm font-medium text-gray-900',
+                    'border border-[#B7CDB0] transition-colors duration-150 outline-none',
+                    'focus:border-[#14532D] focus:bg-[#EBF2EA]',
+                    'disabled:cursor-not-allowed disabled:opacity-50',
+                    isError && 'border-red-500 focus:border-red-500',
+                    !props.value && 'text-gray-400',
+                    className,
+                )}
+                {...props}
+            >
+                {placeholder && (
+                    <option value="" disabled hidden>
+                        {placeholder}
+                    </option>
+                )}
+                {children}
+            </select>
+            <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-gray-400" />
+        </div>
+    );
+}
 
 export interface ThemedCheckboxProps {
     id?: string;

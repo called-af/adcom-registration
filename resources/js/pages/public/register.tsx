@@ -7,6 +7,7 @@ import {
     FormField,
     ThemedCheckbox,
     ThemedInput,
+    ThemedSelect,
     ThemedTextarea,
 } from '@/components/form-field';
 import { Logo } from '@/components/logo';
@@ -283,10 +284,9 @@ export default function PublicRegister({ divisions, success }: Props) {
                                             required
                                             error={errors.angkatan}
                                         >
-                                            <ThemedInput
+                                            <ThemedSelect
                                                 id="angkatan"
                                                 required
-                                                maxLength={4}
                                                 value={data.angkatan}
                                                 onChange={(e) =>
                                                     setData(
@@ -294,10 +294,13 @@ export default function PublicRegister({ divisions, success }: Props) {
                                                         e.target.value,
                                                     )
                                                 }
-                                                placeholder="2025"
-                                                className="font-mono"
+                                                placeholder="Pilih angkatan"
                                                 isError={!!errors.angkatan}
-                                            />
+                                            >
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                            </ThemedSelect>
                                         </FormField>
                                     </div>
 
@@ -307,7 +310,7 @@ export default function PublicRegister({ divisions, success }: Props) {
                                         required
                                         error={errors.study_program}
                                     >
-                                        <ThemedInput
+                                        <ThemedSelect
                                             id="study_program"
                                             required
                                             value={data.study_program}
@@ -317,9 +320,15 @@ export default function PublicRegister({ divisions, success }: Props) {
                                                     e.target.value,
                                                 )
                                             }
-                                            placeholder="Contoh: Teknik Informatika / Sistem Informasi"
+                                            placeholder="Pilih program studi"
                                             isError={!!errors.study_program}
-                                        />
+                                        >
+                                            <option value="Teknik Informatika">Teknik Informatika</option>
+                                            <option value="Sistem Informasi">Sistem Informasi</option>
+                                            <option value="Rekayasa Perangkat Lunak">Rekayasa Perangkat Lunak</option>
+                                            <option value="Manajemen Informatika">Manajemen Informatika</option>
+                                            <option value="Komputerisasi Akutansi">Komputerisasi Akutansi</option>
+                                        </ThemedSelect>
                                     </FormField>
 
                                     <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
