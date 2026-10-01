@@ -288,11 +288,8 @@ export default function PublicRegister({ divisions, success }: Props) {
                                                 id="angkatan"
                                                 required
                                                 value={data.angkatan}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'angkatan',
-                                                        e.target.value,
-                                                    )
+                                                onChange={(val) =>
+                                                    setData('angkatan', val)
                                                 }
                                                 placeholder="Pilih angkatan"
                                                 isError={!!errors.angkatan}
@@ -314,11 +311,8 @@ export default function PublicRegister({ divisions, success }: Props) {
                                             id="study_program"
                                             required
                                             value={data.study_program}
-                                            onChange={(e) =>
-                                                setData(
-                                                    'study_program',
-                                                    e.target.value,
-                                                )
+                                            onChange={(val) =>
+                                                setData('study_program', val)
                                             }
                                             placeholder="Pilih program studi"
                                             isError={!!errors.study_program}
